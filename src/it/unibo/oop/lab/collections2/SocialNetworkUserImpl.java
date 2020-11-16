@@ -1,7 +1,14 @@
 package it.unibo.oop.lab.collections2;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+//import com.sun.tools.classfile.CharacterRangeTable_attribute.Entry;
 
 /**
  * 
@@ -29,7 +36,8 @@ public class SocialNetworkUserImpl<U extends User> extends UserImpl implements S
      * 
      * think of what type of keys and values would best suit the requirements
      */
-
+	Map<String,Set<U>> friends = new HashMap<String,Set<U>>();
+	
     /*
      * [CONSTRUCTORS]
      * 
@@ -40,6 +48,7 @@ public class SocialNetworkUserImpl<U extends User> extends UserImpl implements S
      * 
      * 2) Define a further constructor where age is defaulted to -1
      */
+	
 
     /**
      * Builds a new {@link SocialNetworkUserImpl}.
@@ -57,7 +66,10 @@ public class SocialNetworkUserImpl<U extends User> extends UserImpl implements S
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
         super(name, surname, user, userAge);
     }
-
+    
+    public SocialNetworkUserImpl(final String name, final String surname, final String user) {
+        super(name, surname, user, -1);
+    }
     /*
      * [METHODS]
      * 
@@ -66,17 +78,40 @@ public class SocialNetworkUserImpl<U extends User> extends UserImpl implements S
 
     @Override
     public boolean addFollowedUser(final String circle, final U user) {
-        return false;
+    	for(String s: friends.keySet()){
+    		if(circle.equals(s)) {
+    			Set<U> tmp = friends.get(circle);
+    			if(!tmp.contains(user)) {
+    				tmp.add(user);
+    				return true;
+    			} else {
+    				return false;
+    			}
+    			
+    		} 
+    	}
+    	friends.put(circle, new HashSet<U>());
+    	return this.addFollowedUser(circle, user);
+    		
     }
 
     @Override
     public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+        for(Entry<String,Set<U>> m : friends.entrySet()) {
+        	if(m.getKey().equals(groupName)) {
+        		return Set.copyOf(m.getValue());
+        	}
+        }
+        friends.put(groupName, new HashSet<U>());
+        return Set.copyOf(getFollowedUsersInGroup(groupName));
     }
-
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        List<U> l = new LinkedList<U>();
+        for(Set<U> set: friends.values()) {
+        	l.addAll(set);
+        }
+        return l;
     }
 
 }
