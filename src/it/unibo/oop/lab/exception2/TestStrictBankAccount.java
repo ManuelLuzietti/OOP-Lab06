@@ -2,6 +2,7 @@ package it.unibo.oop.lab.exception2;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import org.junit.*;
@@ -62,4 +63,4 @@ public class TestStrictBankAccount {
     		d.getMessage();
     	}
     }
-}
+	}
